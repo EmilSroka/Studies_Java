@@ -1,3 +1,4 @@
+// https://codeforces.com/problemset/problem/610/A
 package lab1;
 
 import java.util.Scanner;
