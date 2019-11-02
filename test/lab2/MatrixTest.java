@@ -98,30 +98,28 @@ class MatrixTest {
             assertEquals(numberOfBrackets, rows * 2 + 2);
         }
     }
-
+    @Test
+    void reshape_changeDimensions() {
+        Matrix matrix = new Matrix(7,8);
+        matrix.reshape(4,14);
+        assertEquals(matrix.rows,4);
+        assertEquals(matrix.cols, 14);
+    }
+    @Test
+    void reshape_lengthOfDataArrayNotChange() {
+        Matrix matrix = new Matrix(7,8);
+        int before = matrix.data.length;
+        matrix.reshape(28,2);
+        int after = matrix.data.length;
+        assertEquals(after, before);
+    }
+    @Test
+    void reshape_throwErrorIfNumberOfMatrixElementsWillChangeAfterReshape() {
+        Matrix matrix = new Matrix(7,8);
+        assertThrows(RuntimeException.class, () -> matrix.reshape(3,5));
+    }
 
     /*
-
-    @Test
-    void asArray() {
-    }
-
-    @Test
-    void get() {
-    }
-
-    @Test
-    void set() {
-    }
-
-    @Test
-    void testToString() {
-    }
-
-    @Test
-    void reshape() {
-    }
-
     @Test
     void shape() {
     }
@@ -133,6 +131,5 @@ class MatrixTest {
     @Test
     void sub() {
     }
-
     */
 }

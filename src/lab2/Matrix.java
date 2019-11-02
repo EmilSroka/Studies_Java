@@ -1,9 +1,9 @@
 package lab2;
 
 public class Matrix {
-    private double[]data;
-    private int rows;
-    private int cols;
+    double[]data;
+    int rows;
+    int cols;
 
     public Matrix(int rows, int cols){
         allocateData(rows, cols);
@@ -38,21 +38,21 @@ public class Matrix {
 
     public String toString(){
         StringBuilder buf = new StringBuilder();
-        buf.append("[");
+        buf.append("[ ");
         for(int row=1;row<=rows;row++){
-            buf.append("[");
+            buf.append("[ ");
             for(int col=1;col<=cols;col++){
                 buf.append(data[getOffsetIndex(row,col)]);
                 if(col != cols){
                     buf.append(", ");
                 }
             }
-            buf.append("]");
+            buf.append(" ]");
             if(row != rows){
                 buf.append(", ");
             }
         }
-        buf.append("]");
+        buf.append(" ]");
         return buf.toString();
     }
 
@@ -88,7 +88,7 @@ public class Matrix {
         }
         Matrix sum = new Matrix(rows, cols);
         for(int row=1; row <= rows; row++){
-            for(int col=1; col <= cols; col++){
+            for(int col=1; col <= cols; col++) {
                 sum.set(row, col, get(row, col) - subtrahend.get(row, col));
             }
         }
