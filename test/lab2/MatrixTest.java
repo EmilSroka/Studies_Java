@@ -48,20 +48,20 @@ class MatrixTest {
         assertEquals(filled.data[11], 0);
     }
     @Test
-    void asArray(){
+    void asArray_returnTwoDimensionalArray(){
         double[][] input = {{1,2,3},{1,2,3},{1,2,3}};
         Matrix matrix = new Matrix(input);
         assertTrue(Arrays.deepEquals(input, matrix.asArray()));
     }
     @Test
-    void get() {
+    void get_returnValueOfMatrixElement() {
         Matrix matrix = new Matrix(new double [][] {{1,2,3},{1,2,3},{1,2,3}});
         assertEquals(matrix.get(1,1), 1);
         assertEquals(matrix.get(1,2), 2);
         assertEquals(matrix.get(3,3), 3);
     }
     @Test
-    void set() {
+    void set_overwriteMatrixElement() {
         Matrix matrix = new Matrix(2,2);
         matrix.set(1,1,5);
         matrix.set(2,2,999);
@@ -118,7 +118,17 @@ class MatrixTest {
         Matrix matrix = new Matrix(7,8);
         assertThrows(RuntimeException.class, () -> matrix.reshape(3,5));
     }
-
+    @Test
+    void shape_returnArrayWithDimensions() {
+        int [][] dimensions = new int[][] {{1,1},{7,8},{120,1},{1,22},{5,5}};
+        for(int[] dimension: dimensions){
+            int rows = dimension[0];
+            int cols = dimension[1];
+            Matrix matrix = new Matrix(rows, cols);
+            int[] result = matrix.shape();
+            assertTrue(Arrays.equals(dimension, result));
+        }
+    }
     /*
     @Test
     void shape() {
