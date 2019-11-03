@@ -129,17 +129,44 @@ class MatrixTest {
             assertTrue(Arrays.equals(dimension, result));
         }
     }
-    /*
     @Test
-    void shape() {
-    }
+    void add_addMatrixElementsWithTheSameRowAndColumn(){
+        Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        Matrix addend = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11}, {7,8,9,12}});
+        Matrix expectedResult = new Matrix(new double[][] {{4, 16, 6.3, 10}, {8, 10, 12, 18}, {11.5, 15, 342, 78}});
+        Matrix result = matrix.add(addend);
 
-    @Test
-    void add() {
-    }
+        double[][] expectedResultAsArray = expectedResult.asArray();
+        double[][] resultAsArray = result.asArray();
 
-    @Test
-    void sub() {
+        for(int row=0; row<resultAsArray.length ;row++){
+            assertArrayEquals(expectedResultAsArray[row], resultAsArray[row], 0.00001);
+        }
     }
-    */
+    @Test
+    void add_acceptAsArgumentOnlyMatrixWithTheSameDimensions(){
+        Matrix matrix3x4 = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        Matrix addend3x5 = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11,14}, {7,8,9,12}});
+        assertThrows(RuntimeException.class, () -> matrix3x4.add(addend3x5));
+    }
+    @Test
+    void sub_subtractMatrixElementsWithTheSameRowAndColumn(){
+        Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        Matrix subtrahend = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11}, {7,8,9,12}});
+        Matrix expectedResult = new Matrix(new double[][] {{2, 12, 0.3, -10}, {0, 0, 0, -4}, {-2.5, -1, 324, 54}});
+        Matrix result = matrix.sub(subtrahend);
+
+        double[][] expectedResultAsArray = expectedResult.asArray();
+        double[][] resultAsArray = result.asArray();
+
+        for(int row=0; row<resultAsArray.length ;row++){
+            assertArrayEquals(expectedResultAsArray[row], resultAsArray[row], 0.00001);
+        }
+    }
+    @Test
+    void sub_acceptAsArgumentOnlyMatrixWithTheSameDimensions(){
+        Matrix matrix3x4 = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        Matrix subtrahend3x5 = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11,14}, {7,8,9,12}});
+        assertThrows(RuntimeException.class, () -> matrix3x4.add(subtrahend3x5));
+    }
 }
