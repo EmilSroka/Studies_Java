@@ -73,26 +73,40 @@ public class Matrix {
         if(!sameSize(addend)) {
             throw new RuntimeException(String.format("%d x %d matrix can't be add to %d x %d matrix", rows, cols, addend.cols, addend.rows));
         }
-        Matrix sum = new Matrix(rows, cols);
-        for(int row=1; row <= rows; row++){
-            for(int col=1; col <= cols; col++){
-                sum.set(row, col, get(row, col) + addend.get(row, col));
-            }
-        }
-        return sum;
+        return operate(addend, new Addition());
     }
 
     public Matrix sub(Matrix subtrahend){
         if(!sameSize(subtrahend)) {
-            throw new RuntimeException(String.format("%d x %d matrix can't be add to %d x %d matrix", rows, cols, subtrahend.cols, subtrahend.rows));
+            throw new RuntimeException(String.format("%d x %d matrix can't be subtract from %d x %d matrix", rows, cols, subtrahend.cols, subtrahend.rows));
         }
-        Matrix sum = new Matrix(rows, cols);
+        return operate(subtrahend, new Subtraction());
+    }
+
+    public Matrix mul(Matrix factor){
+        if(!sameSize(factor)) {
+            throw new RuntimeException(String.format("%d x %d matrix can't be multiply by %d x %d matrix", rows, cols, factor.cols, factor.rows));
+        }
+        return operate(factor, new Multiplication());
+    }
+
+    public Matrix div(Matrix divisor){
+        if(!sameSize(divisor)) {
+            throw new RuntimeException(String.format("%d x %d matrix can't be divide by %d x %d matrix", rows, cols, divisor.cols, divisor.rows));
+        }
+        return operate(divisor, new Multiplication());
+    }
+
+    /* helpers */
+    private Matrix operate(Matrix operand, Operation operation){
+        Matrix result = new Matrix(rows, cols);
         for(int row=1; row <= rows; row++){
             for(int col=1; col <= cols; col++) {
-                sum.set(row, col, get(row, col) - subtrahend.get(row, col));
+                double matrixElement = operation.result(get(row, col), operand.get(row, col));
+                result.set(row, col, matrixElement);
             }
         }
-        return sum;
+        return result;
     }
 
     private boolean sameSize(Matrix matrix){
@@ -121,3 +135,36 @@ class Utils{
         return max;
     }
 }
+
+interface Operation {
+    double result(double leftOperand, double rightOperand);
+}
+
+class Addition implements Operation{
+    @Override
+    public double result(double leftOperand, double rightOperand) {
+        return leftOperand + rightOperand;
+    }
+}
+
+class Subtraction implements Operation{
+    @Override
+    public double result(double leftOperand, double rightOperand) {
+        return leftOperand - rightOperand;
+    }
+}
+
+class Multiplication implements Operation{
+    @Override
+    public double result(double leftOperand, double rightOperand) {
+        return leftOperand * rightOperand;
+    }
+}
+
+class Division implements Operation{
+    @Override
+    public double result(double leftOperand, double rightOperand) {
+        return leftOperand / rightOperand; // IEEE 754 -> x / 0 = Inf
+    }
+}
+
