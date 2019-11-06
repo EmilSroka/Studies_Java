@@ -150,6 +150,20 @@ class MatrixTest {
         assertThrows(RuntimeException.class, () -> matrix3x4.add(addend3x5));
     }
     @Test
+    void add_addMatrixElementsToGivenScalar(){
+        Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        double scalar = 15;
+        Matrix expectedResult = new Matrix(new double[][] {{18, 29, 18.3, 15}, {19, 20, 21, 22}, {19.5, 22, 348, 81}});
+        Matrix result = matrix.add(scalar);
+
+        double[][] expectedResultAsArray = expectedResult.asArray();
+        double[][] resultAsArray = result.asArray();
+
+        for(int row=0; row<resultAsArray.length ;row++){
+            assertArrayEquals(expectedResultAsArray[row], resultAsArray[row], 0.00001);
+        }
+    }
+    @Test
     void sub_subtractMatrixElementsWithTheSameRowAndColumn(){
         Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
         Matrix subtrahend = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11}, {7,8,9,12}});
@@ -169,4 +183,89 @@ class MatrixTest {
         Matrix subtrahend3x5 = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11,14}, {7,8,9,12}});
         assertThrows(RuntimeException.class, () -> matrix3x4.add(subtrahend3x5));
     }
+    @Test
+    void sub_subtractGivenScalarFromMatrixElements(){
+        Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        double scalar = 15;
+        Matrix expectedResult = new Matrix(new double[][] {{-12, -1, -11.7, -15}, {-11, -10, -9, -8}, {-10.5, -8, 318, 51}});
+        Matrix result = matrix.sub(scalar);
+
+        double[][] expectedResultAsArray = expectedResult.asArray();
+        double[][] resultAsArray = result.asArray();
+
+        for(int row=0; row<resultAsArray.length ;row++){
+            assertArrayEquals(expectedResultAsArray[row], resultAsArray[row], 0.00001);
+        }
+    }
+    @Test
+    void mul_multiplyMatrixElementsWithTheSameRowAndColumn(){
+        Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        Matrix factor = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11}, {7,8,9,12}});
+        Matrix expectedResult = new Matrix(new double[][] {{3, 28, 9.9, 0}, {16, 25, 36, 77}, {31.5, 56, 2997, 792}});
+        Matrix result = matrix.mul(factor);
+
+        double[][] expectedResultAsArray = expectedResult.asArray();
+        double[][] resultAsArray = result.asArray();
+
+        for(int row=0; row<resultAsArray.length ;row++){
+            assertArrayEquals(expectedResultAsArray[row], resultAsArray[row], 0.00001);
+        }
+    }
+    @Test
+    void mul_acceptAsArgumentOnlyMatrixWithTheSameDimensions(){
+        Matrix matrix3x4 = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        Matrix factor3x5 = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11,14}, {7,8,9,12}});
+        assertThrows(RuntimeException.class, () -> matrix3x4.mul(factor3x5));
+    }
+    @Test
+    void mul_multiplyMatrixElementsByScalar(){
+        Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        double scalar = 2;
+        Matrix expectedResult = new Matrix(new double[][] {{6, 28, 6.6, 0}, {8, 10, 12, 14}, {9, 14, 666, 132}});
+        Matrix result = matrix.mul(scalar);
+
+        double[][] expectedResultAsArray = expectedResult.asArray();
+        double[][] resultAsArray = result.asArray();
+
+        for(int row=0; row<resultAsArray.length ;row++){
+            assertArrayEquals(expectedResultAsArray[row], resultAsArray[row], 0.00001);
+        }
+    }
+    @Test
+    void div_divideMatrixElementsWithTheSameRowAndColumn(){
+        Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        Matrix divisor = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11}, {7,8,9,12}});
+        Matrix expectedResult = new Matrix(new double[][] {{3, 7, 1.1, 0}, {1, 1, 1, 0.63636363}, {0.6428571, 0.875, 37, 5.5}});
+        Matrix result = matrix.div(divisor);
+
+        double[][] expectedResultAsArray = expectedResult.asArray();
+        double[][] resultAsArray = result.asArray();
+
+        for(int row=0; row<resultAsArray.length ;row++){
+            assertArrayEquals(expectedResultAsArray[row], resultAsArray[row], 0.00001);
+        }
+    }
+    @Test
+    void div_acceptAsArgumentOnlyMatrixWithTheSameDimensions(){
+        Matrix matrix3x4 = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        Matrix divisor3x5 = new Matrix(new double[][] {{1,2,3,10}, {4,5,6,11,14}, {7,8,9,12}});
+        assertThrows(RuntimeException.class, () -> matrix3x4.div(divisor3x5));
+    }
+    @Test
+    void div_divideMatrixElementsByScalar(){
+        Matrix matrix = new Matrix(new double[][] {{3,14,3.3}, {4,5,6,7}, {4.5,7,333,66}});
+        double scalar = 2;
+        Matrix expectedResult = new Matrix(new double[][] {{1.5, 7, 1.65, 0}, {2, 2.5, 3, 3.5}, {2.25, 3.5, 166.5, 33}});
+        Matrix result = matrix.div(scalar);
+
+        double[][] expectedResultAsArray = expectedResult.asArray();
+        double[][] resultAsArray = result.asArray();
+
+        for(int row=0; row<resultAsArray.length ;row++){
+            assertArrayEquals(expectedResultAsArray[row], resultAsArray[row], 0.00001);
+        }
+    }
+
+
+
 }

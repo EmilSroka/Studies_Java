@@ -76,11 +76,19 @@ public class Matrix {
         return operate(addend, new Addition());
     }
 
+    public Matrix add(double scalar){
+        return operate(scalar, new Addition());
+    }
+
     public Matrix sub(Matrix subtrahend){
         if(!sameSize(subtrahend)) {
             throw new RuntimeException(String.format("%d x %d matrix can't be subtract from %d x %d matrix", rows, cols, subtrahend.cols, subtrahend.rows));
         }
         return operate(subtrahend, new Subtraction());
+    }
+
+    public Matrix sub(double scalar){
+        return operate(scalar, new Subtraction());
     }
 
     public Matrix mul(Matrix factor){
@@ -90,11 +98,19 @@ public class Matrix {
         return operate(factor, new Multiplication());
     }
 
+    public Matrix mul(double scalar){
+        return operate(scalar, new Multiplication());
+    }
+
     public Matrix div(Matrix divisor){
         if(!sameSize(divisor)) {
             throw new RuntimeException(String.format("%d x %d matrix can't be divide by %d x %d matrix", rows, cols, divisor.cols, divisor.rows));
         }
-        return operate(divisor, new Multiplication());
+        return operate(divisor, new Division());
+    }
+
+    public Matrix div(double scalar){
+        return operate(scalar, new Division());
     }
 
     /* helpers */
@@ -103,6 +119,17 @@ public class Matrix {
         for(int row=1; row <= rows; row++){
             for(int col=1; col <= cols; col++) {
                 double matrixElement = operation.result(get(row, col), operand.get(row, col));
+                result.set(row, col, matrixElement);
+            }
+        }
+        return result;
+    }
+
+    private Matrix operate(double scalar, Operation operation){
+        Matrix result = new Matrix(rows, cols);
+        for(int row=1; row <= rows; row++){
+            for(int col=1; col <= cols; col++) {
+                double matrixElement = operation.result(get(row, col), scalar);
                 result.set(row, col, matrixElement);
             }
         }
