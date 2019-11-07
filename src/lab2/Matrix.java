@@ -113,6 +113,26 @@ public class Matrix {
         return operate(scalar, new Division());
     }
 
+    public Matrix dot(Matrix matrix) {
+        if( cols != matrix.rows ){
+            throw new RuntimeException(String.format(
+                    "Number of columns of first matrix (%d) is different than number of rows of second matrix (%d)",
+                    cols, matrix.rows));
+        }
+        Matrix result = new Matrix(rows, matrix.cols);
+        for(int row = 1; row<=rows; row++){
+            for(int col = 1; col<=matrix.cols;col++){
+                int sum = 0;
+                for(int i=1; i<=cols; i++){
+                    sum += get(row, i) * matrix.get(i, col);
+                }
+                result.set(row, col, sum);
+            }
+        }
+        return result;
+    }
+
+
     /* helpers */
     private Matrix operate(Matrix operand, Operation operation){
         Matrix result = new Matrix(rows, cols);

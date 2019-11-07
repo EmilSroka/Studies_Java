@@ -269,7 +269,7 @@ class MatrixTest {
     void dot_implementMatrixMultiplication(){
         Matrix matrix3x2 = new Matrix(new double[][] {{2,1}, {3,1}, {4,1}});
         Matrix matrix2x2 = new Matrix(new double[][] {{2,2}, {2,3}});
-        Matrix expectedResult = new Matrix(new double[][] {{6,7}, {8,9}, {9,10}});
+        Matrix expectedResult = new Matrix(new double[][] {{6,7}, {8,9}, {10,11}});
         Matrix result = matrix3x2.dot(matrix2x2);
 
         double[][] expectedResultAsArray = expectedResult.asArray();
@@ -284,12 +284,12 @@ class MatrixTest {
         Matrix matrix3x4 = new Matrix(3,4);
         Matrix matrix4x3 = new Matrix(4,3);
         Matrix matrix5x2 = new Matrix(5,2);
-        assertThrows(RuntimeException.class, () -> matrix3x4.mul(matrix5x2));
-        assertThrows(RuntimeException.class, () -> matrix4x3.mul(matrix5x2));
-        assertThrows(RuntimeException.class, () -> matrix5x2.mul(matrix3x4));
-        assertThrows(RuntimeException.class, () -> matrix5x2.mul(matrix4x3));
-        matrix3x4.mul(matrix4x3);
-        matrix4x3.mul(matrix3x4);
+        assertThrows(RuntimeException.class, () -> matrix3x4.dot(matrix5x2));
+        assertThrows(RuntimeException.class, () -> matrix4x3.dot(matrix5x2));
+        assertThrows(RuntimeException.class, () -> matrix5x2.dot(matrix3x4));
+        assertThrows(RuntimeException.class, () -> matrix5x2.dot(matrix4x3));
+        matrix3x4.dot(matrix4x3);
+        matrix4x3.dot(matrix3x4);
     }
 
 
