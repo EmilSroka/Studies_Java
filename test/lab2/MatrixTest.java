@@ -291,6 +291,18 @@ class MatrixTest {
         matrix3x4.dot(matrix4x3);
         matrix4x3.dot(matrix3x4);
     }
+    @Test
+    void frobenius_calcFrobeniusNorm (){
+        Matrix matrix1 = new Matrix(new double[][] {{1,1}, {1,1}, {1,1}});
+        Matrix matrix2 = new Matrix(new double[][] {{1,2}, {3,4}, {5,6}});
+        Matrix matrix3 = new Matrix(new double[][] {{1.1, 2}, {3.3, 55}});
+        double expectedResult1 = 2.449489; // sqrt(6)
+        double expectedResult2 = 9.539392; // sqrt(91)
+        double expectedResult3 = 55.146169; // sqrt(3014.1)
+        assertEquals(matrix1.frobenius(), expectedResult1, 5);
+        assertEquals(matrix2.frobenius(), expectedResult2, 5);
+        assertEquals(matrix3.frobenius(), expectedResult3, 5);
+    }
 
 
 
