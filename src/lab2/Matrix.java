@@ -132,6 +132,13 @@ public class Matrix {
         return result;
     }
 
+    public double frobenius(){
+        int sum = 0;
+        for(int i=0; i<data.length; i++){
+            sum += data[i] * data[i];
+        }
+        return Math.sqrt(sum);
+    }
 
     /* helpers */
     private Matrix operate(Matrix operand, Operation operation){

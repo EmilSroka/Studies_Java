@@ -303,7 +303,4 @@ class MatrixTest {
         assertEquals(matrix2.frobenius(), expectedResult2, 5);
         assertEquals(matrix3.frobenius(), expectedResult3, 5);
     }
-
-
-
 }
