@@ -10,7 +10,7 @@ Labs thematic scope:
 * [2] Classes (Matrix class)
 * [3] Unit test (Matrix class unit test)
 * [4] Relations between objects (CV generator)
-* [5] 
+* [5] Abstract classes (Simple derivative calculator)
 * [6] Files handling and basics errors (CSV Reader)
 
 Labs focus more on object oriented programming in java than object oriented programing as a paradigm. 
