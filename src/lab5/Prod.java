@@ -6,6 +6,7 @@ import java.util.List;
 public class Prod extends Node {
     List<Node> args = new ArrayList<>();
 
+    Prod(){}
     Prod(Node n1){
         args.add(n1);
     }
@@ -66,5 +67,40 @@ public class Prod extends Node {
         builder.append(after);
 
         return builder.toString();
+    }
+
+    Node diff(Variable var) {
+        Sum derivative = new Sum();
+        for(int i=0; i<args.size(); i++){
+            boolean hasZero = false;
+            Prod currentMultiplication = new Prod();
+            for(int j=0;j<args.size();j++){
+                Node node = args.get(j);
+
+                if(node.isZero()) {
+                    hasZero = true;
+                }
+
+                if(j==i) {
+                    currentMultiplication.mul(node.diff(var));
+                } else {
+                    currentMultiplication.mul(node);
+                }
+            }
+            if(!hasZero) {
+                derivative.add(currentMultiplication);
+            }
+        }
+        return derivative;
+    }
+
+    @Override
+    boolean isZero() {
+        for(Node node:args){
+            if(node.isZero()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

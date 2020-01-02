@@ -64,5 +64,26 @@ public class Sum extends Node {
         return builder.toString();
     }
 
+    @Override
+    Node diff(Variable var) {
+        Sum derivative = new Sum();
+        for(Node node:args){
+            if(! node.isZero()) {
+                derivative.add(node.diff(var));
+            }
+        }
+        return derivative;
+    }
+
+    @Override
+    boolean isZero() {
+        for(Node node:args){
+            if(! node.isZero()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 }

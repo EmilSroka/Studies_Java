@@ -47,4 +47,15 @@ public class Power extends Node {
         return builder.toString();
     }
 
+    @Override
+    Node diff(Variable var) {
+        Prod r =  new Prod(sign*power,new Power(argument,power-1));
+        r.mul(argument.diff(var));
+        return r;
+    }
+
+    @Override
+    boolean isZero() {
+        return argument.isZero();
+    }
 }
