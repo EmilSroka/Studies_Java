@@ -52,24 +52,44 @@ public class AdminUnitList {
             } catch (NumberFormatException e) {
                 density = Double.NaN;
             }
-            double x1, x2, x3, x4, y1, y2, y3, y4;
+            BoundingBox place = new BoundingBox();
             try {
+                double x1, x2, x3, x4, y1, y2, y3, y4;
                 x1 = reader.getDouble("x1"); y1 = reader.getDouble("y1");
                 x2 = reader.getDouble("x2"); y2 = reader.getDouble("y2");
                 x3 = reader.getDouble("x3"); y3 = reader.getDouble("y3");
                 x4 = reader.getDouble("x4"); y4 = reader.getDouble("y4");
+                place.addPoint(x1, y1);
+                place.addPoint(x2, y2);
+                place.addPoint(x3, y3);
+                place.addPoint(x4, y4);
             } catch (NumberFormatException e) {
-                x1 = Double.NaN; y1 = Double.NaN;
-                x2 = Double.NaN; y2 = Double.NaN;
-                x3 = Double.NaN; y3 = Double.NaN;
-                x4 = Double.NaN; y4 = Double.NaN;
+
             }
 
 
-            AdminUnit newUnit = new AdminUnit(name, adminLevel, population, area, density);
+            AdminUnit newUnit = new AdminUnit(name, adminLevel, population, area, density, place);
             idToAdminUnit.put(id, newUnit);
             units.add(newUnit);
             adminUnitToParentId.put(newUnit, parent);
+
+            /*
+            if(name.equals("Ropczyce")){
+                System.out.printf(Locale.US,"LINESTRING(%f %f, %f %f, %f %f, %f %f, %f %f)",
+                        reader.getDouble("x1"),
+                        reader.getDouble("y1"),
+                        reader.getDouble("x2"),
+                        reader.getDouble("y2"),
+                        reader.getDouble("x3"),
+                        reader.getDouble("y3"),
+                        reader.getDouble("x4"),
+                        reader.getDouble("y4"),
+                        reader.getDouble("x1"),
+                        reader.getDouble("y1")
+                );
+            }
+             */
+
         }
         for(AdminUnit unit : units){
             long parentID = adminUnitToParentId.get(unit);
@@ -130,6 +150,32 @@ public class AdminUnitList {
             unit.fixMissingValues();
         }
         return this;
+    }
+    /**
+     * Zwraca listę jednostek sąsiadujących z jendostką unit na tym samym poziomie hierarchii admin_level.
+     * @param target - jednostka, której sąsiedzi mają być wyznaczeni
+     * @return lista wypełniona sąsiadami
+     */
+    AdminUnitList getNeighbors(AdminUnit target){
+        return getNeighbors(target, 15);
+    }
+    /**
+     * Zwraca listę jednostek sąsiadujących z jendostką unit na tym samym poziomie hierarchii admin_level.
+     * @param target - jednostka, której sąsiedzi mają być wyznaczeni
+     * @param maxDistance - parametr stosowany wyłącznie dla miejscowości, maksymalny promień odległości od środka unit,
+     *                    w którym mają sie znaleźć punkty środkowe BoundingBox sąsiadów
+     * @return lista wypełniona sąsiadami
+     */
+    AdminUnitList getNeighbors(AdminUnit target, double maxDistance){
+        if(target.adminLevel > 8) { return getNeighbors(target); }
+
+        AdminUnitList neighbors = new AdminUnitList();
+        for(AdminUnit unit : units) {
+            if(target.isNeighbour(unit, maxDistance)){
+                neighbors.units.add(unit);
+            }
+        }
+        return neighbors;
     }
 
 }
