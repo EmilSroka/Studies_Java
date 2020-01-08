@@ -1,5 +1,7 @@
 package lab7;
 
+import lab2.Matrix;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +65,17 @@ public class AdminUnit {
             return this.bbox.intersects(unit.bbox);
         } else {
             return inRange(distance, unit);
+        }
+    }
+
+    boolean overlaps(AdminUnit unit, double distance) {
+        if(this.adminLevel < 8){
+            return unit.bbox.intersects(this.bbox) || unit.bbox.contains(this.bbox);
+        } else {
+            double width = Utilities.haversineFormula(unit.bbox.xMin, unit.bbox.yMin, unit.bbox.xMax, unit.bbox.yMin);
+            double height = Utilities.haversineFormula(unit.bbox.xMin, unit.bbox.yMin, unit.bbox.xMin, unit.bbox.yMax);
+            double offset = Math.max(width, height) * 0.51;
+            return inRange(distance + offset, unit);
         }
     }
 

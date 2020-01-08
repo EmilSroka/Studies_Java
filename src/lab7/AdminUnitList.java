@@ -7,6 +7,7 @@ import java.util.*;
 
 public class AdminUnitList {
     List<AdminUnit> units = new ArrayList<>();
+    List<AdminUnit> roots = new ArrayList<>();
     Map<Long,AdminUnit> idToAdminUnit = new HashMap<>();
 
     /**
@@ -67,29 +68,11 @@ public class AdminUnitList {
 
             }
 
-
             AdminUnit newUnit = new AdminUnit(name, adminLevel, population, area, density, place);
             idToAdminUnit.put(id, newUnit);
-            units.add(newUnit);
             adminUnitToParentId.put(newUnit, parent);
-
-            /*
-            if(name.equals("Ropczyce")){
-                System.out.printf(Locale.US,"LINESTRING(%f %f, %f %f, %f %f, %f %f, %f %f)",
-                        reader.getDouble("x1"),
-                        reader.getDouble("y1"),
-                        reader.getDouble("x2"),
-                        reader.getDouble("y2"),
-                        reader.getDouble("x3"),
-                        reader.getDouble("y3"),
-                        reader.getDouble("x4"),
-                        reader.getDouble("y4"),
-                        reader.getDouble("x1"),
-                        reader.getDouble("y1")
-                );
-            }
-             */
-
+            units.add(newUnit);
+            if(newUnit.adminLevel == 4) roots.add(newUnit);
         }
         for(AdminUnit unit : units){
             long parentID = adminUnitToParentId.get(unit);
@@ -167,14 +150,61 @@ public class AdminUnitList {
      * @return lista wypełniona sąsiadami
      */
     AdminUnitList getNeighbors(AdminUnit target, double maxDistance){
-        if(target.adminLevel > 8) { return getNeighbors(target); }
-
         AdminUnitList neighbors = new AdminUnitList();
         for(AdminUnit unit : units) {
             if(target.isNeighbour(unit, maxDistance)){
                 neighbors.units.add(unit);
             }
         }
+        return neighbors;
+    }
+    /**
+     * Zwraca listę jednostek sąsiadujących z jendostką unit na tym samym poziomie hierarchii admin_level.
+     * @param target - jednostka, której sąsiedzi mają być wyznaczeni
+     * @return lista wypełniona sąsiadami
+     */
+    AdminUnitList findNeighbors(AdminUnit target){
+        return findNeighbors(target, 15);
+    }
+    /**
+     * Zwraca listę jednostek sąsiadujących z jendostką unit na tym samym poziomie hierarchii admin_level.
+     * @param target - jednostka, której sąsiedzi mają być wyznaczeni
+     * @param maxDistance - parametr stosowany wyłącznie dla miejscowości, maksymalny promień odległości od środka unit,
+     *                    w którym mają sie znaleźć punkty środkowe BoundingBox sąsiadów
+     * @return lista wypełniona sąsiadami
+     */
+    AdminUnitList findNeighbors(AdminUnit target, double maxDistance){
+        AdminUnitList neighbors = new AdminUnitList();
+        List <AdminUnit> mayOverlaps = new ArrayList<>(roots);
+        List <AdminUnit> overlapsSearchingElement = new ArrayList<>();
+        List <AdminUnit> toCheck = new ArrayList<>();
+
+        while(mayOverlaps.size() != 0){
+            for(AdminUnit unit : mayOverlaps){
+                if(target.overlaps(unit, maxDistance)){
+                    overlapsSearchingElement.add(unit);
+                }
+            }
+
+            mayOverlaps = new ArrayList<>();
+            for(AdminUnit unit: overlapsSearchingElement){
+                if(unit.adminLevel == target.adminLevel){
+                    toCheck.add(unit);
+                } else {
+                    for (AdminUnit child : unit.children) {
+                        mayOverlaps.add(child);
+                    }
+                }
+            }
+            overlapsSearchingElement = new ArrayList<>();
+        }
+
+        for(AdminUnit unit : toCheck){
+            if(target.isNeighbour(unit, maxDistance)){
+                neighbors.units.add(unit);
+            }
+        }
+
         return neighbors;
     }
 
