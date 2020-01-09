@@ -1,14 +1,25 @@
 package lab7;
 
+import lab2.Matrix;
 import lab6.CSVReader;
 
 import java.io.PrintStream;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class AdminUnitList {
-    List<AdminUnit> units = new ArrayList<>();
-    List<AdminUnit> roots = new ArrayList<>();
-    Map<Long,AdminUnit> idToAdminUnit = new HashMap<>();
+    List<AdminUnit> units;
+    List<AdminUnit> roots;
+
+    public AdminUnitList(){
+        units = new ArrayList<>();
+        roots = new ArrayList<>();
+    }
+
+    public AdminUnitList(AdminUnitList list){
+        units = new ArrayList<>(list.units);
+        roots = new ArrayList<>(list.roots);
+    }
 
     /**
      * Czyta rekordy pliku i dodaje do listy
@@ -17,6 +28,7 @@ public class AdminUnitList {
     public AdminUnitList read(String fileName){
         CSVReader reader = new CSVReader(fileName, ",", true);
         Map<AdminUnit,Long> adminUnitToParentId = new HashMap<>();
+        Map<Long,AdminUnit> idToAdminUnit = new HashMap<>();
         idToAdminUnit.put(-1L, null);
 
         while(reader.next()){
@@ -83,6 +95,13 @@ public class AdminUnitList {
         return this;
     }
 
+    void addUnit(AdminUnit unit){
+        if(unit.adminLevel == 4){
+            roots.add(unit);
+        }
+        units.add(unit);
+    }
+
     /**
      * Wypisuje co najwyżej limit elementów począwszy od elementu o indeksie offset
      * @param out - strumień wyjsciowy
@@ -119,7 +138,7 @@ public class AdminUnitList {
             }
 
             if(match){
-                matches.units.add(unit);
+                matches.addUnit(unit);
             }
         }
         return matches;
@@ -153,7 +172,7 @@ public class AdminUnitList {
         AdminUnitList neighbors = new AdminUnitList();
         for(AdminUnit unit : units) {
             if(target.isNeighbour(unit, maxDistance)){
-                neighbors.units.add(unit);
+                neighbors.addUnit(unit);
             }
         }
         return neighbors;
@@ -201,11 +220,95 @@ public class AdminUnitList {
 
         for(AdminUnit unit : toCheck){
             if(target.isNeighbour(unit, maxDistance)){
-                neighbors.units.add(unit);
+                neighbors.addUnit(unit);
             }
         }
-
         return neighbors;
     }
 
+    /**
+     * Sortuje daną listę jednostek w miejscu
+     * @return this
+     */
+    AdminUnitList sortInPlaceByName(){
+        class AdminUnitComparator implements Comparator<AdminUnit> {
+            public int compare(AdminUnit unit1, AdminUnit unit2){
+                return unit1.name.compareTo(unit2.name);
+            }
+        }
+
+        AdminUnitComparator comparator = new AdminUnitComparator();
+        units.sort(comparator);
+        return this;
+    }
+    /**
+     * Sortuje daną listę jednostek w miejscu
+     * @return this
+     */
+    AdminUnitList sortInPlaceByArea(){
+        Comparator<AdminUnit> comparator = new Comparator<AdminUnit>() {
+            @Override
+            public int compare(AdminUnit unit1, AdminUnit unit2) {
+                return (int)(unit1.area - unit2.area);
+            }
+        };
+
+        units.sort(comparator);
+        return this;
+    }
+    /**
+     * Sortuje daną listę jednostek (in place = w miejscu)
+     * @return this
+     */
+    AdminUnitList sortInPlaceByPopulation(){
+        units.sort((unit1, unit2) -> (int)(unit1.population - unit2.population));
+        return this;
+    }
+    AdminUnitList sortInPlace(Comparator<AdminUnit> cmp){
+        units.sort(cmp);
+        return this;
+    }
+    AdminUnitList sort(Comparator<AdminUnit> cmp){
+        AdminUnitList out = new AdminUnitList(this);
+        out.sortInPlace(cmp);
+        return out;
+    }
+    /**
+     *
+     * @param pred referencja do interfejsu Predicate
+     * @return nową listę, na której pozostawiono tylko te jednostki,
+     * dla których metoda test() zwraca true
+     */
+    AdminUnitList filter(Predicate<AdminUnit> pred) {
+        AdminUnitList out = new AdminUnitList();
+        for(AdminUnit unit : this.units){
+            if(pred.test(unit)){
+                out.addUnit(unit);
+            }
+        }
+        return out;
+    }
+    /**
+     * Zwraca co najwyżej limit elementów spełniających pred
+     * @param pred - predykat
+     * @param limit - maksymalna liczba elementów
+     * @return nową listę
+     */
+    AdminUnitList filter(Predicate<AdminUnit> pred, int limit){
+        return filter(pred, 0, limit);
+    }
+    /**
+     * Zwraca co najwyżej limit elementów spełniających pred począwszy od offset
+     * Offest jest obliczany po przefiltrowaniu
+     * @param pred - predykat
+     * @param - od którego elementu
+     * @param limit - maksymalna liczba elementów
+     * @return nową listę
+     */
+    AdminUnitList filter(Predicate<AdminUnit> pred, int offset, int limit){
+        AdminUnitList out = filter(pred);
+        int getTo = Math.min( offset + limit, out.units.size() );
+        out.units = out.units.subList(offset, getTo);
+        return out;
+    }
 }

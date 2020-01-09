@@ -1,7 +1,5 @@
 package lab7;
 
-import lab2.Matrix;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +11,7 @@ public class AdminUnit {
     double density;
     AdminUnit parent;
     List<AdminUnit> children = new ArrayList<>();
-    BoundingBox bbox = new BoundingBox();
+    BoundingBox bbox;
 
     AdminUnit(String name, int adminLevel, double population, double area, double density, BoundingBox bbox){
         this.name = name;
@@ -70,10 +68,10 @@ public class AdminUnit {
 
     boolean overlaps(AdminUnit unit, double distance) {
         if(this.adminLevel < 8){
-            return unit.bbox.intersects(this.bbox) || unit.bbox.contains(this.bbox);
+            return unit.bbox.intersects(this.bbox) || unit.bbox.contains(this.bbox) || this.bbox.intersects(unit.bbox);
         } else {
-            double width = Utilities.haversineFormula(unit.bbox.xMin, unit.bbox.yMin, unit.bbox.xMax, unit.bbox.yMin);
-            double height = Utilities.haversineFormula(unit.bbox.xMin, unit.bbox.yMin, unit.bbox.xMin, unit.bbox.yMax);
+            double width = Utilities.haversineFormula(unit.bbox.yMin, unit.bbox.xMin, unit.bbox.yMax, unit.bbox.xMin);
+            double height = Utilities.haversineFormula(unit.bbox.yMin, unit.bbox.xMin, unit.bbox.yMin, unit.bbox.xMax);
             double offset = Math.max(width, height) * 0.51;
             return inRange(distance + offset, unit);
         }
@@ -85,7 +83,7 @@ public class AdminUnit {
             double unitY = unit.bbox.getCenterY();
             double targetX = this.bbox.getCenterX();
             double targetY = this.bbox.getCenterY();
-            if(Utilities.haversineFormula(unitX, unitY, targetX, targetY) < distance) {
+            if(Utilities.haversineFormula(unitY, unitX, targetY, targetX) < distance) {
                 return true;
             } else {
                 return false;

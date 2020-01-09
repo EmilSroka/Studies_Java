@@ -50,8 +50,16 @@ public class BoundingBox {
      * @return
      */
     boolean intersects(BoundingBox bb){
-        return (contains(bb.xMin, bb.yMin) && !contains(bb.xMax, bb.yMax))
-            || (!contains(bb.xMin, bb.yMin) && contains(bb.xMax, bb.yMax));
+        int bbCornersInside = 0;
+        bbCornersInside = contains(bb.xMin, bb.yMin) ? bbCornersInside + 1 : bbCornersInside;
+        bbCornersInside = contains(bb.xMin, bb.yMax) ? bbCornersInside + 1 : bbCornersInside;
+        bbCornersInside = contains(bb.xMax, bb.yMin) ? bbCornersInside + 1 : bbCornersInside;
+        bbCornersInside = contains(bb.xMax, bb.yMax) ? bbCornersInside + 1 : bbCornersInside;
+
+        if(bbCornersInside == 0 || bbCornersInside == 4) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -116,7 +124,7 @@ public class BoundingBox {
      */
     double distanceTo(BoundingBox bb){
         try {
-            return Utilities.haversineFormula(this.getCenterX(), this.getCenterY(), bb.getCenterX(), bb.getCenterY());
+            return Utilities.haversineFormula(this.getCenterY(), this.getCenterX(), bb.getCenterY(), bb.getCenterX());
         } catch (IllegalAccessException e){
             return Double.MAX_VALUE;
         }
