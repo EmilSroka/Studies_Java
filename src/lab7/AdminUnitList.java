@@ -249,7 +249,9 @@ public class AdminUnitList {
         Comparator<AdminUnit> comparator = new Comparator<AdminUnit>() {
             @Override
             public int compare(AdminUnit unit1, AdminUnit unit2) {
-                return (int)(unit1.area - unit2.area);
+                if (unit1.area < unit2.area) return 1;
+                else if (unit1.area == unit2.area) return 0;
+                else return -1;
             }
         };
 
