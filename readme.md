@@ -13,8 +13,9 @@ Labs thematic scope:
 5. Abstract classes (Simple derivative calculator)
 6. Files handling and basics errors (CSV Reader)  
 7. Java Collections (AdminUnitList)
-8. AdminUnitList - continuation
-9. Interfaces and lambda expressions (AdminUnitList - continuation)
+8. Interfaces (AdminUnitList - continuation)
+9. Lambda expressions (AdminUnitList - continuation)
+10. Threads (Clock)
 
 Labs focus more on object oriented programming in java than object oriented programing as a paradigm. 
 That's because previous course, which was named 'programming languages and methods II', contained object oriented programming.
